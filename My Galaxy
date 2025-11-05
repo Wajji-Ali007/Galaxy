@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy of Love - Manahil</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #020010, #000);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    background: linear-gradient(90deg, #ff99d9, #c77bff, #9ed9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 25px rgba(255, 180, 250, 0.7);
+    animation: glow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 10px #ffb3ec, 0 0 20px #d08aff; }
+    to { text-shadow: 0 0 30px #ffa6ff, 0 0 40px #d8b3ff; }
+  }
+
+  p {
+    font-size: 1.3em;
+    margin-top: 20px;
+    color: #fff;
+    opacity: 0;
+    animation: fadeInOut 10s ease-in-out infinite;
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translateY(15px); }
+    20%, 80% { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.7em; }
+    p { font-size: 1em; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<div class="content">
+  <h1>Manahil ✨</h1>
+  <p>Even in this endless galaxy, my heart orbits only around you 💞<br>
+  I miss you more than the stars miss the night.</p>
+</div>
+
+<script>
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let w, h, stars = [];
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+  createStars();
+}
+window.addEventListener('resize', resize);
+resize();
+
+function createStars() {
+  stars = [];
+  for (let i = 0; i < 400; i++) {
+    stars.push({
+      x: Math.random() * w - w / 2,
+      y: Math.random() * h - h / 2,
+      z: Math.random() * w,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      vz: -Math.random() * 2 - 0.2,
+      size: Math.random() * 2,
+      color: `hsla(${280 + Math.random() * 60}, 90%, 80%, 0.9)`
+    });
+  }
+}
+
+function draw() {
+  ctx.fillStyle = "rgba(0, 0, 10, 0.3)";
+  ctx.fillRect(0, 0, w, h);
+  ctx.save();
+  ctx.translate(w / 2, h / 2);
+  
+  for (let s of stars) {
+    s.x += s.vx;
+    s.y += s.vy;
+    s.z += s.vz;
+
+    if (s.z < 1) s.z = w;
+    const k = 128 / s.z;
+    const px = s.x * k;
+    const py = s.y * k;
+
+    if (px > -w / 2 && px < w / 2 && py > -h / 2 && py < h / 2) {
+      ctx.beginPath();
+      ctx.arc(px, py, s.size * (1 - s.z / w), 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
